@@ -1,7 +1,7 @@
 # system-design
 system-design and architecture.
 
-Design CRM – System Design
+CRM – System Design
 
 CRM Overview:
 CRM is a set of practices, strategies, and technologies used to manage and analyse customer interactions and data throughout the customer lifecycle. The primary goal of CRM is to improve customer relationships, streamline communication, and enhance customer satisfaction.
@@ -26,7 +26,9 @@ Non-Functional Requirements:
 -	Monitoring & Maintainability: Logging: agent activity, ticket status, API calls
                                   - Metrics: average resolution time, ticket volume, active sessions
                                   - Use tools like Prometheus, ELK, and Grafana for visibility
+
 2 . Architecture Principles & Patterns
+
  1. High Availability (HA)
        -     Multi-AZ Deployment — Resources like EKS node groups, RDS (Primary/Secondary), DocumentDB, Kafka, and OpenSearch are spread across AZs (1a, 1b, 1c) for fault tolerance
 -	Load Balanced APIs behind ALB for availability.
@@ -55,40 +57,58 @@ Non-Functional Requirements:
 CRM platform is infrastructure agnostic, it supports the containerized deployment (with Amazon EKS) on AWS public cloud. Below diagram depict the standard AWS architecture. Solution is configured in Multi AZ environment on AWS.
 AWS Architect :
  
-    <img width="940" height="514" alt="image" src="https://github.com/user-attachments/assets/9cc9d4df-39ea-4831-be0e-acb4fa89cccc" />
+   ![Alt text](./architecture.png)
 
  
-Service Name	Purpose
-IAM	User Access Management
-VPC	Virtual Private Cloud for Internal/External Communication
-EKS	K8s Cluster Creation on aws to run the MS
-ECR	Repository for Hosting BSS Docker Images
-S3	Repository for Hosting Logs Backup
-EC2	Elastic compute for run standalone server
-ELB	Use to segregate traffic basis on request type
-NAT Gateway	Use for network translation for private network
-EFS	Used for creating PV and for batch 
-RDS	MySQL database for storage of user profile, data, transaction details etc.
-MSK	Kafka for messaging
-Opensearch 	For application log monitoring 
-SES	For send notifications
-DocumentDB	Used by MongoDb apis
+ServiceName
+
+IAM	: User Access Management
+
+VPC:Virtual Private Cloud for Internal/External Communication
+
+EKS	:K8s Cluster Creation on aws to run the MS
+
+ECR:	Repository for Hosting BSS Docker Images
+
+S3:	Repository for Hosting Logs Backup
+
+EC2:	Elastic compute for run standalone server
+
+ELB:	Use to segregate traffic basis on request type
+
+NAT: Gateway	Use for network translation for private network
+
+EFS:	Used for creating PV and for batch 
+
+RDS:	MySQL database for storage of user profile, data, transaction details etc.
+
+MSK:	Kafka for messaging
+
+Opensearch: 	For application log monitoring 
+
+SES:	For send notifications
+
+DocumentDB:	Used by MongoDb apis
 
 4. Operational Excellence
- 1. Monitoring & Observability
+   
+  1. Monitoring & Observability
      -   CloudWatch for logs & metrics
      -   SNS for alerts
      -   VPC Flow Logs for network observability
      -   Prometheus/OpenSearch stack for app metrics and search
-2. Backup & Disaster Recovery (DR)
+
+  2. Backup & Disaster Recovery (DR)
   -   RDS snapshots (daily + PITR)
   -   S3 versioning + replication
   -   EKS manifests stored in Git for rehydration
- 3. Security & Compliance Operations
+ 
+  3. Security & Compliance Operations
   -  Enable AWS WAF logs and guardrails
   -  Use AWS Config for drift detection
   -  Enable IAM Access Analyzer
-4 . Cost Monitoring & Right-Sizing
+  
+  4 . Cost Monitoring & Right-Sizing
   -  Idle EKS nodes or underutilized pods
  -  Unused ALBs or NAT gateways
  -  S3 storage classes (move infrequent data to Glacier or IA)
